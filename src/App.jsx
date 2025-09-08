@@ -1,10 +1,9 @@
 
-import React, { useEffect, useState } from 'react';
-import { Amplify } from 'aws-amplify';
-import { Authenticator } from '@aws-amplify/ui-react';
-import '@aws-amplify/ui-react/styles.css';
-import awsExports from './aws-exports'; // or amplify_exports.json
-import { generateClient } from './api'; // typically generated from GraphQL schema
+import { generateClient } from "aws-amplify/api";
+import { Amplify } from "aws-amplify";
+import awsExports from "./aws-exports";
+import { listNotes } from "./graphql/queries";
+
 
 Amplify.configure(awsExports);
 
