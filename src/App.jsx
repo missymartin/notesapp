@@ -3,9 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { Amplify } from 'aws-amplify';
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-import awsExports from './aws-exports'; // or amplify_exports.json
-import { generateClient } from './api'; // typically generated from GraphQL schema
+import awsExports from './aws-exports';
+import { generateClient } from 'aws-amplify/api';
 
+import { listNotes } from './graphql/queries';
+import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
 Amplify.configure(awsExports);
 
 const App = () => {
