@@ -2,8 +2,6 @@
 import { generateClient } from "aws-amplify/api";
 import { Amplify } from "aws-amplify";
 import awsExports from "./aws-exports";
-import { listNotes } from "./graphql/queries";
-
 import { listNotes } from './graphql/queries';
 import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
 Amplify.configure(awsExports);
