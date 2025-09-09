@@ -1,31 +1,41 @@
 
-import { generateClient } from "aws-amplify/api";
+import React, { useState, useEffect } from "react";
 import { Amplify } from "aws-amplify";
+import { generateClient } from "aws-amplify/api";
+import { Authenticator } from "@aws-amplify/ui-react";
+import "@aws-amplify/ui-react/styles.css";
+
 import awsExports from "./aws-exports";
-import { listNotes } from './graphql/queries';
-import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
+import { listNotes } from "./graphql/queries";
+import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from "./graphql/mutations";
+
 Amplify.configure(awsExports);
+const client = generateClient();
 
 const App = () => {
   const [notes, setNotes] = useState([]);
-  const [formData, setFormData] = useState({ name: '', description: '' });
-
-  const client = generateClient();
+  const [formData, setFormData] = useState({ name: "", description: "" });
 
   async function fetchNotes() {
-    const apiData = await client.listNotes();
-    setNotes(apiData.items);
+    const apiData = await client.graphql({ query: listNotes });
+    setNotes(apiData.data.listNotes.items);
   }
 
   async function createNote() {
     if (!formData.name || !formData.description) return;
-    await client.createNote({ input: { ...formData } });
-    setFormData({ name: '', description: '' });
+    await client.graphql({
+      query: createNoteMutation,
+      variables: { input: { ...formData } }
+    });
+    setFormData({ name: "", description: "" });
     fetchNotes();
   }
 
   async function deleteNote(id) {
-    await client.deleteNote({ input: { id } });
+    await client.graphql({
+      query: deleteNoteMutation,
+      variables: { input: { id } }
+    });
     fetchNotes();
   }
 
@@ -70,19 +80,3 @@ const App = () => {
 };
 
 export default App;
-
-/*
-import reactLogo from "./assets/react.svg";
-import "./App.css";
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={reactLogo} className="logo react" alt="React logo" />
-        <h1>Hello from Amplify</h1>
-      </header>
-    </div>
-  );
-}
-export default App;
-*/
