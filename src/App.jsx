@@ -46,6 +46,59 @@ const App = () => {
     fetchTodos();
   }, []);
 
+  // ... (inside the return statement of your component)
+return (
+  <Authenticator>
+    {({ signOut, user }) => (
+      <div style={{ padding: 20 }}>
+        {/* ... */}
+        <h3>My Todos</h3>
+        <div style={{ width: 350, padding: '20px' }}>
+          <input
+            style={{
+              border: '1px solid #d1d5db',
+              borderRadius: '0.375rem',
+              padding: '0.75rem',
+              width: '100%',
+              marginBottom: '15px'
+            }}
+            placeholder="Note name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          />
+          <input
+            style={{
+              border: '1px solid #d1d5db',
+              borderRadius: '0.375rem',
+              padding: '0.75rem',
+              width: '100%',
+              marginBottom: '15px'
+            }}
+            placeholder="Note description"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          />
+          <button
+            style={{
+              backgroundColor: '#0e858a',
+              color: 'white',
+              border: 'none',
+              borderRadius: '0.375rem',
+              padding: '1rem',
+              width: '100%',
+              cursor: 'pointer'
+            }}
+            onClick={createTodo}
+          >
+            Create Note
+          </button>
+        </div>
+        {/* ... */}
+      </div>
+    )}
+  </Authenticator>
+);
+/*
   return (
     <Authenticator>
       {({ signOut, user }) => (
@@ -84,7 +137,8 @@ const App = () => {
         </div>
       )}
     </Authenticator>
-  );
+  
+  ); */
 };
 
 export default App;
