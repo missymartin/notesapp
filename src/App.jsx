@@ -1,10 +1,10 @@
-
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Amplify } from "aws-amplify";
-import { generateClient } from "aws-amplify/api";
 import { Authenticator } from "@aws-amplify/ui-react";
+import "@aws-amplify/ui-react/styles.css";
 
 import awsExports from "./aws-exports";
+import { generateClient } from "aws-amplify/api";
 import { listTodos } from "./graphql/queries";
 import {
   createTodo as createTodoMutation,
@@ -13,48 +13,33 @@ import {
 
 Amplify.configure(awsExports);
 
-const client = generateClient();
-
 const App = () => {
   const [todos, setTodos] = useState([]);
   const [formData, setFormData] = useState({ name: "", description: "" });
 
-  // Fetch Todos
+  const client = generateClient();
+
   async function fetchTodos() {
-    try {
-      const apiData = await client.graphql({ query: listTodos });
-      setTodos(apiData.data.listTodos.items);
-    } catch (err) {
-      console.error("Error fetching notes:", err);
-    }
+    const apiData = await client.graphql({ query: listTodos });
+    setTodos(apiData.data.listTodos.items);
   }
 
-  // Create Todo
   async function createTodo() {
     if (!formData.name || !formData.description) return;
-    try {
-      await client.graphql({
-        query: createTodoMutation,
-        variables: { input: { ...formData } },
-      });
-      setFormData({ name: "", description: "" });
-      fetchTodos();
-    } catch (err) {
-      console.error("Error creating note:", err);
-    }
+    await client.graphql({
+      query: createTodoMutation,
+      variables: { input: formData },
+    });
+    setFormData({ name: "", description: "" });
+    fetchTodos();
   }
 
-  // Delete Todo
   async function deleteTodo(id) {
-    try {
-      await client.graphql({
-        query: deleteTodoMutation,
-        variables: { input: { id } },
-      });
-      fetchTodos();
-    } catch (err) {
-      console.error("Error deleting note:", err);
-    }
+    await client.graphql({
+      query: deleteTodoMutation,
+      variables: { input: { id } },
+    });
+    fetchTodos();
   }
 
   useEffect(() => {
@@ -68,13 +53,11 @@ const App = () => {
           <h2>Hello, {user?.username}</h2>
           <button onClick={signOut}>Sign Out</button>
 
-          <h3>My Notes</h3>
+          <h3>My Todos</h3>
           <input
             placeholder="Note name"
             value={formData.name}
-            onChange={(e) =>
-              setFormData({ ...formData, name: e.target.value })
-            }
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           />
           <input
             placeholder="Note description"
@@ -105,3 +88,4 @@ const App = () => {
 };
 
 export default App;
+
